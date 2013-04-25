@@ -249,6 +249,7 @@ public class MyVaadinUI extends UI {
 		l.setCaption("Empleados");
 		l.setMargin(true);
 		l.setSpacing(true);
+		l.setImmediate(true);
 
 		employees = JPAContainerFactory.make(Employee.class,
 				MyVaadinUI.PERSISTENCE_UNIT);
