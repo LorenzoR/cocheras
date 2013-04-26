@@ -24,11 +24,16 @@ import org.torraca.garage.model.Garage;
 import org.torraca.garage.model.MonthlyGaragePayment;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
+import org.torraca.garage.web.components.mainTabs.DailyGaragePaymentsTab;
+import org.torraca.garage.web.components.mainTabs.EmployeesTab;
+import org.torraca.garage.web.components.mainTabs.ExpensesTab;
 import org.torraca.garage.web.components.mainTabs.GaragesTab;
+import org.torraca.garage.web.components.mainTabs.MonthlyGaragePaymentsTab;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.addon.jpacontainer.util.DefaultQueryModifierDelegate;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
@@ -69,6 +74,8 @@ public class MyVaadinUI extends UI {
 	@Override
 	protected void init(VaadinRequest request) {
 		dataGenerator();
+		
+		Page.getCurrent().setTitle("Adminstrador de Cocheras");
 
 		final VerticalLayout layout = new VerticalLayout();
 		layout.setMargin(true);
@@ -81,11 +88,13 @@ public class MyVaadinUI extends UI {
 		TabSheet tabs = new TabSheet();
 		tabs.setSizeFull();
 
-		tabs.addComponent(buildDailyGaragePaymentTab());
-		tabs.addComponent(buildMonthlyGaragePaymentTab());
-		tabs.addComponent(buildGarageTab());
-		tabs.addComponent(buildEmployeeTab());
-		tabs.addComponent(buildExpensesTab());
+		tabs.addTab(new DailyGaragePaymentsTab(), "Ingresos Diarios");
+		tabs.addTab(new MonthlyGaragePaymentsTab(), "Ingresos Mensuales");
+//		tabs.addComponent(buildMonthlyGaragePaymentTab());
+//		tabs.addComponent(buildGarageTab());
+		tabs.addTab(new EmployeesTab(), "Empleados");
+//		tabs.addComponent(buildExpensesTab());
+		tabs.addTab(new ExpensesTab(), "Gastos");
 		tabs.addTab(new GaragesTab(), "Cocheras");
 
 		layout.addComponent(tabs);
@@ -265,98 +274,6 @@ public class MyVaadinUI extends UI {
 		return l;
 	}
 
-	private Layout buildDailyGaragePaymentTab() {
-		VerticalLayout l = new VerticalLayout();
-		l.setCaption("Ingresos Diarios");
-		l.setMargin(true);
-		l.setSpacing(true);
-
-		HorizontalLayout horizontalLayout = new HorizontalLayout();
-		horizontalLayout.setWidth("100%");
-		horizontalLayout.setMargin(new MarginInfo(false, true, false, true));
-
-		garages = JPAContainerFactory.make(Garage.class,
-				MyVaadinUI.PERSISTENCE_UNIT);
-		
-		Button buttonWithBill = new Button("Con Factura");
-		buttonWithBill.setStyleName(Reindeer.BUTTON_LINK);
-		buttonWithBill.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-
-//				garages = getGarages(floorParam);
-//
-//				garagesTable.setContainerDataSource(garages);
-
-			}
-		});
-		horizontalLayout.addComponent(buttonWithBill);
-
-		Button buttonWithoutBill = new Button("Sin Factura");
-		buttonWithoutBill.setStyleName(Reindeer.BUTTON_LINK);
-		buttonWithoutBill.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-
-//				garages = getGarages(floorParam);
-//
-//				garagesTable.setContainerDataSource(garages);
-
-			}
-		});
-		horizontalLayout.addComponent(buttonWithoutBill);
-		
-		Button buttonTotal = new Button("Total");
-		buttonTotal.setStyleName(Reindeer.BUTTON_LINK);
-		buttonTotal.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-
-//				garages = getGarages(floorParam);
-//
-//				garagesTable.setContainerDataSource(garages);
-
-			}
-		});
-		horizontalLayout.addComponent(buttonTotal);
-
-		l.addComponent(horizontalLayout);
-
-		dailyGaragePayments = JPAContainerFactory.make(
-				DailyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
-
-		Table dailyGaragePaymentsTable = createTable(dailyGaragePayments,
-				new String[] { "24hs", "1 Hora", "24hs $", "Factura", "8hs",
-						"8hs $", "1 Hora $", "Fecha" },
-				new ValueColumnGenerator("$ %.2f"));
-
-		l.addComponent(dailyGaragePaymentsTable);
-
-		newDailyPaymentButton = new Button("Add");
-		newDailyPaymentButton.addClickListener(new Button.ClickListener() {
-
-			// @Override
-			public void buttonClick(ClickEvent event) {
-				final BeanItem<DailyGaragePayment> newDailyGaragePaymentItem = new BeanItem<DailyGaragePayment>(
-						new DailyGaragePayment());
-				DailyGaragePaymentEditor dailyGaragePaymentEditor = new DailyGaragePaymentEditor(
-						newDailyGaragePaymentItem);
-				dailyGaragePaymentEditor
-						.addListener(new DailyGaragePaymentSavedListener() {
-							// @Override
-							public void dailyGaragePaymentSaved(
-									DailyGaragePaymentSavedEvent event) {
-								dailyGaragePayments
-										.addEntity(newDailyGaragePaymentItem
-												.getBean());
-							}
-						});
-				UI.getCurrent().addWindow(dailyGaragePaymentEditor);
-			}
-		});
-
-		l.addComponent(newDailyPaymentButton);
-
-		return l;
-	}
-
 	private Layout buildMonthlyGaragePaymentTab() {
 		VerticalLayout l = new VerticalLayout();
 		l.setCaption("Ingresos Mensuales");
@@ -473,60 +390,4 @@ public class MyVaadinUI extends UI {
 		return table;
 	}
 
-	/** Formats the value in a column containing Double objects. */
-	private class ValueColumnGenerator implements Table.ColumnGenerator {
-		String format; /* Format string for the Double values. */
-
-		/**
-		 * Creates double value column formatter with the given format string.
-		 */
-		public ValueColumnGenerator(String format) {
-			this.format = format;
-		}
-
-		/**
-		 * Generates the cell containing the Double value. The column is
-		 * irrelevant in this use case.
-		 */
-		public Component generateCell(Table source, Object itemId,
-				Object columnId) {
-			// Get the object stored in the cell as a property
-			Property prop = source.getItem(itemId).getItemProperty(columnId);
-
-			System.out.println("ITEMID " + itemId);
-			System.out.println("COLUMNID " + columnId);
-
-			Long qtyByHour = (Long) source.getContainerProperty(itemId,
-					"qtyByHour").getValue();
-			Long qtyBy8Hours = (Long) source.getContainerProperty(itemId,
-					"qtyBy8Hours").getValue();
-			Long qtyBy24Hours = (Long) source.getContainerProperty(itemId,
-					"qtyBy24Hours").getValue();
-
-			Double amountByHour = (Double) source.getContainerProperty(itemId,
-					"amountByHour").getValue();
-			Double amountBy8Hours = (Double) source.getContainerProperty(
-					itemId, "amountBy8Hours").getValue();
-			Double amountBy24Hours = (Double) source.getContainerProperty(
-					itemId, "amountBy24Hours").getValue();
-
-			Double sum = qtyByHour + qtyBy8Hours + qtyBy24Hours + amountByHour
-					+ amountBy8Hours + amountBy24Hours;
-
-			// if (prop != null && prop.getType().equals(Double.class)) {
-			Label label = new Label(String.format(format,
-					new Object[] { (Double) sum }));
-
-			// Set styles for the column: one indicating that it's
-			// a value and a more specific one with the column
-			// name in it. This assumes that the column name
-			// is proper for CSS.
-
-			label.addStyleName("column-type-value");
-			label.addStyleName("column-" + (String) columnId);
-			return label;
-			// }
-			// return null;
-		}
-	}
 }

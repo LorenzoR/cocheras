@@ -258,3 +258,60 @@ CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRI
 04-25 22:16:28 jdbc[2]: exception
 org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
 CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:30:32 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:32:13 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:35:53 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:41:11 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:43:44 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:45:40 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:48:40 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:49:33 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 22:50:59 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 23:20:21 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 23:26:24 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 23:28:30 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 23:36:53 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 23:53:52 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 23:55:19 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-25 23:58:14 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-26 01:07:19 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-26 01:20:14 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
+04-26 01:23:59 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "SEQUENCE" already exists; SQL statement:
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME)) [42101-160]
