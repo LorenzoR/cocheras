@@ -22,6 +22,9 @@ import org.torraca.garage.web.MyVaadinUI;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
 import org.torraca.garage.web.components.CustomTable;
+import org.torraca.garage.web.components.H1;
+import org.torraca.garage.web.components.H2;
+import org.torraca.garage.web.components.Ruler;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -43,14 +46,18 @@ import com.vaadin.ui.themes.Reindeer;
 public class DailyGaragePaymentsTab extends CustomComponent {
 
 	private JPAContainer<DailyGaragePayment> dailyGaragePayments;
-	
+
 	private Table dailyGaragePaymentsTable;
-	
+
 	public DailyGaragePaymentsTab() {
 		VerticalLayout l = new VerticalLayout();
-		l.setCaption("Ingresos Diarios");
 		l.setMargin(true);
 		l.setSpacing(true);
+		
+		H2 title = new H2("Ingresos Diarios");
+		
+		l.addComponent(title);
+		l.addComponent(new Ruler());
 
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setWidth("100%");
@@ -61,7 +68,8 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 		buttonWithBill.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				dailyGaragePayments = getPayments(true);
-				dailyGaragePaymentsTable.setContainerDataSource(dailyGaragePayments);
+				dailyGaragePaymentsTable
+						.setContainerDataSource(dailyGaragePayments);
 				// garages = getGarages(floorParam);
 				//
 				// garagesTable.setContainerDataSource(garages);
@@ -75,7 +83,8 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 		buttonWithoutBill.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 				dailyGaragePayments = getPayments(false);
-				dailyGaragePaymentsTable.setContainerDataSource(dailyGaragePayments);
+				dailyGaragePaymentsTable
+						.setContainerDataSource(dailyGaragePayments);
 				// garages = getGarages(floorParam);
 				//
 				// garagesTable.setContainerDataSource(garages);
@@ -89,9 +98,10 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 		buttonTotal.addClickListener(new Button.ClickListener() {
 			public void buttonClick(ClickEvent event) {
 
-				dailyGaragePayments = JPAContainerFactory
-						.make(DailyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
-				dailyGaragePaymentsTable.setContainerDataSource(dailyGaragePayments);
+				dailyGaragePayments = JPAContainerFactory.make(
+						DailyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
+				dailyGaragePaymentsTable
+						.setContainerDataSource(dailyGaragePayments);
 				// garages = getGarages(floorParam);
 				//
 				// garagesTable.setContainerDataSource(garages);
@@ -102,13 +112,17 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 
 		l.addComponent(horizontalLayout);
 
-		dailyGaragePayments = JPAContainerFactory
-				.make(DailyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
+		dailyGaragePayments = JPAContainerFactory.make(
+				DailyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
+		dailyGaragePayments.sort(new String[] { "date" },
+				new boolean[] { false });
 
-		dailyGaragePaymentsTable = new CustomTable(dailyGaragePayments,
-				null, new String[] { "24hs", "1 Hora", "24hs $", "Factura",
-						"8hs", "8hs $", "1 Hora $", "Fecha" },
-				new ValueColumnGenerator("$ %.2f"));
+		// dailyGaragePaymentsTable = new CustomTable(dailyGaragePayments,
+		// null, new String[] { "24hs", "1 Hora", "24hs $", "Factura",
+		// "8hs", "8hs $", "1 Hora $", "Fecha", "Garage", "columna" },
+		// new ValueColumnGenerator("$ %.2f"));
+
+		dailyGaragePaymentsTable = new CustomTable(dailyGaragePayments);
 
 		l.addComponent(dailyGaragePaymentsTable);
 
@@ -160,9 +174,6 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 			// Get the object stored in the cell as a property
 			Property prop = source.getItem(itemId).getItemProperty(columnId);
 
-			System.out.println("ITEMID " + itemId);
-			System.out.println("COLUMNID " + columnId);
-
 			Long qtyByHour = (Long) source.getContainerProperty(itemId,
 					"qtyByHour").getValue();
 			Long qtyBy8Hours = (Long) source.getContainerProperty(itemId,
@@ -196,7 +207,7 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 			// return null;
 		}
 	}
-	
+
 	private JPAContainer<DailyGaragePayment> getPayments(final boolean withBill) {
 		dailyGaragePayments.getEntityProvider().setQueryModifierDelegate(
 				new DefaultQueryModifierDelegate() {
@@ -209,7 +220,8 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 						// Add a "WHERE age > 116" expression
 						Path<Boolean> floorPath = fromGarage
 								.<Boolean> get("withBill");
-						predicates.add(criteriaBuilder.equal(floorPath, withBill));
+						predicates.add(criteriaBuilder.equal(floorPath,
+								withBill));
 					}
 				});
 

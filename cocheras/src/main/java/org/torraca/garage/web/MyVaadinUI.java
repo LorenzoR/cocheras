@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
@@ -22,13 +24,18 @@ import org.torraca.garage.model.Employee;
 import org.torraca.garage.model.Expense;
 import org.torraca.garage.model.Garage;
 import org.torraca.garage.model.MonthlyGaragePayment;
+import org.torraca.garage.model.MonthlyGaragePayment.PaymentMethod;
+import org.torraca.garage.model.MonthlyGaragePayment.PaymentType;
+import org.torraca.garage.model.SalaryAdvance;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
+import org.torraca.garage.web.components.mainTabs.AccountingTab;
 import org.torraca.garage.web.components.mainTabs.DailyGaragePaymentsTab;
 import org.torraca.garage.web.components.mainTabs.EmployeesTab;
 import org.torraca.garage.web.components.mainTabs.ExpensesTab;
 import org.torraca.garage.web.components.mainTabs.GaragesTab;
 import org.torraca.garage.web.components.mainTabs.MonthlyGaragePaymentsTab;
+import org.torraca.garage.web.components.mainTabs.SalaryAdvancesTab;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -36,6 +43,7 @@ import com.vaadin.addon.jpacontainer.util.DefaultQueryModifierDelegate;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -63,67 +71,102 @@ public class MyVaadinUI extends UI {
 
 	public static final String PERSISTENCE_UNIT = "garageManager";
 
-	private JPAContainer<DailyGaragePayment> dailyGaragePayments;
-	private JPAContainer<MonthlyGaragePayment> monthlyGaragePayments;
-	private JPAContainer<Garage> garages;
-	private JPAContainer<Employee> employees;
-
-	private Button newDailyPaymentButton;
-	private Button newGarage;
+	@PersistenceContext(unitName = "garageManager", type = PersistenceContextType.EXTENDED)
+	private static EntityManager entityManager;
 
 	@Override
 	protected void init(VaadinRequest request) {
 		dataGenerator();
-		
+
 		Page.getCurrent().setTitle("Adminstrador de Cocheras");
 
-		final VerticalLayout layout = new VerticalLayout();
-		layout.setMargin(true);
-		setContent(layout);
+		final VerticalLayout mainLayout = new VerticalLayout();
+		mainLayout.setWidth("1200px");
+		mainLayout.setMargin(true);
+		mainLayout.setSpacing(true);
+		setContent(mainLayout);
+
+		final HorizontalLayout headerLayout = new HorizontalLayout();
+		headerLayout.setMargin(false);
+		headerLayout.setSpacing(false);
+		headerLayout.setWidth("100%");
 
 		Label mainLabel = new Label("Administrador de Cocheras");
+		mainLabel.setWidth("70%");
 		mainLabel.setStyleName(Reindeer.LABEL_H1);
-		layout.addComponent(mainLabel);
+
+		headerLayout.addComponent(mainLabel);
+
+		VerticalLayout userPanelLayout = new VerticalLayout();
+		userPanelLayout.setWidth("30%");
+		Label userLabel = new Label("Bienvenido, usuario");
+		userPanelLayout.addComponent(userLabel);
+		userPanelLayout.setComponentAlignment(userLabel, Alignment.TOP_CENTER);
+
+		Button logoutButton = new Button("Salir");
+		logoutButton.setStyleName(Reindeer.BUTTON_SMALL);
+		userPanelLayout.addComponent(logoutButton);
+		userPanelLayout.setComponentAlignment(logoutButton,
+				Alignment.MIDDLE_CENTER);
+
+		headerLayout.addComponent(userPanelLayout);
+
+		headerLayout.setComponentAlignment(userPanelLayout,
+				Alignment.MIDDLE_RIGHT);
+
+		mainLayout.addComponent(headerLayout);
 
 		TabSheet tabs = new TabSheet();
 		tabs.setSizeFull();
 
 		tabs.addTab(new DailyGaragePaymentsTab(), "Ingresos Diarios");
 		tabs.addTab(new MonthlyGaragePaymentsTab(), "Ingresos Mensuales");
-//		tabs.addComponent(buildMonthlyGaragePaymentTab());
-//		tabs.addComponent(buildGarageTab());
+		// tabs.addComponent(buildMonthlyGaragePaymentTab());
+		// tabs.addComponent(buildGarageTab());
 		tabs.addTab(new EmployeesTab(), "Empleados");
-//		tabs.addComponent(buildExpensesTab());
+		// tabs.addComponent(buildExpensesTab());
 		tabs.addTab(new ExpensesTab(), "Gastos");
 		tabs.addTab(new GaragesTab(), "Cocheras");
+		tabs.addTab(new SalaryAdvancesTab(), "Adelantos de Sueldo");
+		tabs.addTab(new AccountingTab(), "Contabilidad");
 
-		layout.addComponent(tabs);
+		mainLayout.addComponent(tabs);
 
 	}
 
 	private static void dataGenerator() {
-		EntityManager em = Persistence.createEntityManagerFactory(
+		entityManager = Persistence.createEntityManagerFactory(
 				MyVaadinUI.PERSISTENCE_UNIT).createEntityManager();
-		em.getTransaction().begin();
+		entityManager.getTransaction().begin();
 
 		Random randomGenerator = new Random(new Date().getTime());
 
 		ArrayList<Garage> garageArray = new ArrayList<Garage>();
+		ArrayList<Employee> employeeArray = new ArrayList<Employee>();
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
+			Garage garage = new Garage();
 
-			int year = randomGenerator.nextInt(2014 - 2000) + 2000;
+			garage.setNumber((long) (i + 1));
+			garage.setPrice((double) 199);
+			garage.setFloor(randomGenerator.nextInt(10) + 1);
+			garage.setSide((char) ('a' + randomGenerator.nextInt(20)));
 
-			int month = randomGenerator.nextInt(Calendar.DECEMBER) + 1;
+			garageArray.add(garage);
 
-			GregorianCalendar gc = new GregorianCalendar(year, month, 1);
+			entityManager.persist(garage);
+		}
 
-			int day = randomGenerator.nextInt(gc
-					.getActualMaximum(gc.DAY_OF_MONTH)) + 1;
+		for (int i = 1; i < 6; i++) {
+			Employee employee = new Employee("Nombre " + i, "Apellido " + i);
+			employeeArray.add(employee);
+			entityManager.persist(employee);
+		}
 
-			gc.set(year, month, day);
+		for (int i = 0; i < 20; i++) {
 
-			DailyGaragePayment dailyGaragePayment = new DailyGaragePayment(gc);
+			DailyGaragePayment dailyGaragePayment = new DailyGaragePayment(
+					randomDate());
 			dailyGaragePayment.setQtyBy24Hours(Long.valueOf(randomGenerator
 					.nextInt(100)));
 			dailyGaragePayment.setQtyBy8Hours(Long.valueOf(randomGenerator
@@ -137,257 +180,90 @@ public class MyVaadinUI extends UI {
 
 			dailyGaragePayment.setWithBill(randomGenerator.nextBoolean());
 
-			em.persist(dailyGaragePayment);
+			dailyGaragePayment.setRegisteredBy(employeeArray
+					.get(randomGenerator.nextInt(employeeArray.size())));
+
+			entityManager.persist(dailyGaragePayment);
 		}
 
-		for (int i = 0; i < 50; i++) {
-			Garage garage = new Garage();
-
-			garage.setNumber((long) (i + 1));
-			garage.setPrice((double) 199);
-			garage.setFloor(randomGenerator.nextInt(10) + 1);
-
-			garageArray.add(garage);
-
-			em.persist(garage);
-		}
-
-		for (int i = 1; i < 6; i++) {
-			Employee employee = new Employee("Nombre " + i, "Apellido " + i);
-
-			em.persist(employee);
-		}
-
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 4; i++) {
 			MonthlyGaragePayment monthlyGaragePayment = new MonthlyGaragePayment();
 			monthlyGaragePayment.setGarage(garageArray.get(randomGenerator
 					.nextInt(garageArray.size())));
-			monthlyGaragePayment.setMonth(randomGenerator.nextInt(12));
-			monthlyGaragePayment.setMoney(randomGenerator.nextDouble());
+			monthlyGaragePayment.setDate(randomMonthYear());
+			monthlyGaragePayment
+					.setMoney((double) randomGenerator.nextInt(100));
 
-			em.persist(monthlyGaragePayment);
+			monthlyGaragePayment.setWithBill(randomGenerator.nextBoolean());
 
-		}
+			monthlyGaragePayment.setRegisteredBy(employeeArray
+					.get(randomGenerator.nextInt(employeeArray.size())));
 
-		for (int i = 1; i < 11; i++) {
+			monthlyGaragePayment
+					.setPaymentMethod(PaymentMethod.values()[randomGenerator
+							.nextInt(PaymentMethod.values().length)]);
+			monthlyGaragePayment
+					.setPaymentType(PaymentType.values()[randomGenerator
+							.nextInt(PaymentType.values().length)]);
 
-			int year = randomGenerator.nextInt(2014 - 2000) + 2000;
-
-			int month = randomGenerator.nextInt(Calendar.DECEMBER) + 1;
-
-			GregorianCalendar gc = new GregorianCalendar(year, month, 1);
-
-			int day = randomGenerator.nextInt(gc
-					.getActualMaximum(gc.DAY_OF_MONTH)) + 1;
-
-			gc.set(year, month, day);
-
-			Expense expense = new Expense(gc, randomGenerator.nextDouble(),
-					"Detalle del gasto " + i);
-
-			em.persist(expense);
-		}
-
-		em.getTransaction().commit();
-
-	}
-
-	private Table garagesTable;
-
-	private Layout buildGarageTab() {
-		final VerticalLayout l = new VerticalLayout();
-		l.setCaption("Cocheras");
-		l.setMargin(true);
-		l.setSpacing(true);
-		l.setImmediate(true);
-
-		HorizontalLayout floorsLayout = new HorizontalLayout();
-		floorsLayout.setWidth("100%");
-		floorsLayout.setMargin(new MarginInfo(false, true, false, true));
-
-		garages = JPAContainerFactory.make(Garage.class,
-				MyVaadinUI.PERSISTENCE_UNIT);
-
-		for (int i = 1; i < 11; i++) {
-			final int floorParam = i;
-			Button button = new Button(" [ Piso " + i + " ] ");
-			button.setStyleName(Reindeer.BUTTON_LINK);
-			button.addClickListener(new Button.ClickListener() {
-				// @Override
-				public void buttonClick(ClickEvent event) {
-
-					garages = getGarages(floorParam);
-
-					garagesTable.setContainerDataSource(garages);
-
-				}
-			});
-
-			floorsLayout.addComponent(button);
-		}
-
-		l.addComponent(floorsLayout);
-
-		garagesTable = createTable(garages, new String[] { "Precio", "Piso",
-				"Número Cochera" }, null);
-
-		l.addComponent(garagesTable);
-
-		return l;
-	}
-
-	private Layout buildExpensesTab() {
-		VerticalLayout l = new VerticalLayout();
-		l.setCaption("Gastos");
-		l.setMargin(true);
-		l.setSpacing(true);
-
-		JPAContainer<Expense> expenses;
-
-		expenses = JPAContainerFactory.make(Expense.class,
-				MyVaadinUI.PERSISTENCE_UNIT);
-
-		// Table expensesTable = createTable(expenses, new String[] { "Precio",
-		// "Número Cochera" }, null);
-		Table expensesTable = createTable(expenses, null, null);
-
-		l.addComponent(expensesTable);
-
-		return l;
-	}
-
-	private Layout buildEmployeeTab() {
-		VerticalLayout l = new VerticalLayout();
-		l.setCaption("Empleados");
-		l.setMargin(true);
-		l.setSpacing(true);
-		l.setImmediate(true);
-
-		employees = JPAContainerFactory.make(Employee.class,
-				MyVaadinUI.PERSISTENCE_UNIT);
-
-		Table employeesTable = createTable(employees, new String[] {
-				"Apellido", "Nombre" }, null);
-
-		l.addComponent(employeesTable);
-
-		return l;
-	}
-
-	private Layout buildMonthlyGaragePaymentTab() {
-		VerticalLayout l = new VerticalLayout();
-		l.setCaption("Ingresos Mensuales");
-		l.setMargin(true);
-		l.setSpacing(true);
-
-		monthlyGaragePayments = JPAContainerFactory.make(
-				MonthlyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
-
-		Table monthlyGaragePaymentsTable = createTable(monthlyGaragePayments,
-				null, null);
-
-		l.addComponent(monthlyGaragePaymentsTable);
-
-		return l;
-	}
-
-	private Layout buildDateFields(String tabCaption) {
-		VerticalLayout l = new VerticalLayout();
-		l.setCaption(tabCaption);
-		l.setMargin(true);
-		l.setSpacing(true);
-
-		l.addComponent(new Label(
-				"Date fields don't currently have any additional style names, but here you can see how they behave with the different background colors."));
-
-		HorizontalLayout hl = new HorizontalLayout();
-		hl.setSpacing(true);
-		// hl.setMargin(true, false, false, false);
-		hl.setMargin(new MarginInfo(true, false, false, false));
-		l.addComponent(hl);
-
-		DateField df = new DateField();
-		df.setValue(new Date());
-		df.setResolution(DateField.RESOLUTION_MIN);
-		hl.addComponent(df);
-
-		df = new InlineDateField();
-		df.setValue(new Date());
-		df.setResolution(DateField.RESOLUTION_DAY);
-		hl.addComponent(df);
-
-		df = new InlineDateField();
-		df.setValue(new Date());
-		df.setResolution(DateField.RESOLUTION_YEAR);
-		hl.addComponent(df);
-
-		return l;
-	}
-
-	private JPAContainer<Garage> getGarages(final int floor) {
-		garages.getEntityProvider().setQueryModifierDelegate(
-				new DefaultQueryModifierDelegate() {
-					@Override
-					public void filtersWillBeAdded(
-							CriteriaBuilder criteriaBuilder,
-							CriteriaQuery<?> query, List<Predicate> predicates) {
-						Root<?> fromGarage = query.getRoots().iterator().next();
-
-						// Add a "WHERE age > 116" expression
-						Path<Integer> floorPath = fromGarage
-								.<Integer> get("floor");
-						predicates.add(criteriaBuilder.equal(floorPath, floor));
-					}
-				});
-
-		return garages;
-	}
-
-	private static Table createTable(Container dataSource,
-			String[] columnHeaders, ColumnGenerator columnGenerator) {
-
-		Table table = new Table(null, dataSource) {
-			@Override
-			protected String formatPropertyValue(Object rowId, Object colId,
-					Property property) {
-
-				if (((String) colId).contains("price")) {
-					return "$ " + String.valueOf(property.getValue());
-				}
-
-				if (property.getType() == Calendar.class) {
-
-					SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
-					fmt.setCalendar((GregorianCalendar) property.getValue());
-					String dateFormatted = fmt
-							.format(((GregorianCalendar) property.getValue())
-									.getTime());
-
-					return dateFormatted;
-				}
-
-				return super.formatPropertyValue(rowId, colId, property);
+			if (monthlyGaragePayment.getPaymentType() == PaymentType.PRESENT) {
+				monthlyGaragePayment.setQtyMonths(1);
+			} else {
+				monthlyGaragePayment
+						.setQtyMonths(randomGenerator.nextInt(5) + 1);
 			}
-		};
 
-		// table.setColumnHeader("date", "Fecha");
-		ArrayList<Object> columns = new ArrayList<Object>(Arrays.asList(table
-				.getVisibleColumns()));
-		columns.remove(0);
+			entityManager.persist(monthlyGaragePayment);
 
-		table.setVisibleColumns(columns.toArray());
-
-		if (columnHeaders != null) {
-			table.setColumnHeaders(columnHeaders);
 		}
 
-		if (columnGenerator != null) {
-			table.addGeneratedColumn("total", columnGenerator);
+		for (int i = 1; i < 11; i++) {
+
+			Expense expense = new Expense(randomDate(),
+					randomGenerator.nextDouble(), "Detalle del gasto " + i);
+
+			entityManager.persist(expense);
 		}
 
-		table.setImmediate(true);
+		for (int i = 0; i < 10; i++) {
+			SalaryAdvance salaryAdvance = new SalaryAdvance();
+			salaryAdvance.setAmount(randomGenerator.nextDouble());
+			salaryAdvance.setEmployee(employeeArray.get(randomGenerator
+					.nextInt(employeeArray.size())));
+			salaryAdvance.setDate(randomDate());
 
-		return table;
+			entityManager.persist(salaryAdvance);
+		}
+
+		entityManager.getTransaction().commit();
+
 	}
 
+	private static Calendar randomDate() {
+		Random randomGenerator = new Random(new Date().getTime());
+
+		int year = randomGenerator.nextInt(2014 - 2000) + 2000;
+
+		int month = randomGenerator.nextInt(Calendar.DECEMBER) + 1;
+
+		GregorianCalendar gc = new GregorianCalendar(year, month, 1);
+
+		int day = randomGenerator.nextInt(gc.getActualMaximum(gc.DAY_OF_MONTH)) + 1;
+
+		gc.set(year, month, day);
+
+		return gc;
+	}
+
+	private static Calendar randomMonthYear() {
+		Random randomGenerator = new Random(new Date().getTime());
+
+		int year = randomGenerator.nextInt(2014 - 2000) + 2000;
+
+		int month = randomGenerator.nextInt(Calendar.DECEMBER) + 1;
+
+		GregorianCalendar gc = new GregorianCalendar(year, month, 1);
+
+		return gc;
+	}
 }

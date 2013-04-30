@@ -93,22 +93,11 @@ public class DailyGaragePaymentEditor extends Window implements
 		Field field = DefaultFieldFactory.get().createField(item, propertyId,
 				uiContext);
 
-		System.out.println("******ITEM: " + item);
-		System.out.println("******propertyID: " + propertyId);
-		System.out.println(propertyId.getClass());
-
-		// if ("department".equals(propertyId)) {
-		// field = new DepartmentSelector();
-		// } else if (field instanceof TextField) {
-		// ((TextField) field).setNullRepresentation("");
-		// }
-
 		if (field instanceof TextField) {
 			((TextField) field).setNullRepresentation("");
 		}
 
 		if (String.valueOf(propertyId).equals("date")) {
-			System.out.println("************ ACA 222");
 			PopupDateField dateField = new PopupDateField();
 			dateField.setResolution(PopupDateField.RESOLUTION_DAY);
 			dateField.setConverter(new DateToCalendarConverter());
@@ -145,7 +134,6 @@ public class DailyGaragePaymentEditor extends Window implements
 
 		public DailyGaragePaymentSavedEvent(Component source, Item savedItem) {
 			super(source);
-			System.out.println("++++ " + savedItem);
 			this.savedItem = savedItem;
 		}
 

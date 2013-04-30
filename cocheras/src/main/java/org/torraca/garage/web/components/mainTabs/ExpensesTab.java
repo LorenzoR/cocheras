@@ -9,6 +9,8 @@ import java.util.GregorianCalendar;
 import org.torraca.garage.model.Expense;
 import org.torraca.garage.web.MyVaadinUI;
 import org.torraca.garage.web.components.CustomTable;
+import org.torraca.garage.web.components.H2;
+import org.torraca.garage.web.components.Ruler;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -27,6 +29,11 @@ public class ExpensesTab extends CustomComponent {
 		l.setMargin(true);
 		l.setSpacing(true);
 
+		H2 title = new H2("Gastos");
+		
+		l.addComponent(title);
+		l.addComponent(new Ruler());
+		
 		JPAContainer<Expense> expenses;
 
 		expenses = JPAContainerFactory.make(Expense.class,

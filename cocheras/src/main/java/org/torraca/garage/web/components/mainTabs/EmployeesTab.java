@@ -10,6 +10,8 @@ import org.torraca.garage.model.Employee;
 import org.torraca.garage.model.Expense;
 import org.torraca.garage.web.MyVaadinUI;
 import org.torraca.garage.web.components.CustomTable;
+import org.torraca.garage.web.components.H2;
+import org.torraca.garage.web.components.Ruler;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -25,10 +27,14 @@ public class EmployeesTab extends CustomComponent {
 
 	public EmployeesTab() {
 		VerticalLayout l = new VerticalLayout();
-		l.setCaption("Empleados");
 		l.setMargin(true);
 		l.setSpacing(true);
 		l.setImmediate(true);
+		
+		H2 title = new H2("Empleados");
+		
+		l.addComponent(title);
+		l.addComponent(new Ruler());
 
 		JPAContainer<Employee> employees = JPAContainerFactory.make(
 				Employee.class, MyVaadinUI.PERSISTENCE_UNIT);

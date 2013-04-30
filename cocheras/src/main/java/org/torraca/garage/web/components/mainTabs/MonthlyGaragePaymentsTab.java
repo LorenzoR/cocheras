@@ -16,6 +16,8 @@ import org.torraca.garage.web.MyVaadinUI;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
 import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
 import org.torraca.garage.web.components.CustomTable;
+import org.torraca.garage.web.components.H2;
+import org.torraca.garage.web.components.Ruler;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
@@ -37,15 +39,35 @@ public class MonthlyGaragePaymentsTab extends CustomComponent {
 
 	public MonthlyGaragePaymentsTab() {
 		VerticalLayout l = new VerticalLayout();
-		l.setCaption("Ingresos Mensuales");
 		l.setMargin(true);
 		l.setSpacing(true);
 
+		H2 title = new H2("Ingresos Mensuales");
+		
+		l.addComponent(title);
+		l.addComponent(new Ruler());
+		
 		JPAContainer<MonthlyGaragePayment> monthlyGaragePayments = JPAContainerFactory.make(
 				MonthlyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
 
-		Table monthlyGaragePaymentsTable = new CustomTable(monthlyGaragePayments);
+		//Table monthlyGaragePaymentsTable = new CustomTable(monthlyGaragePayments);
 
+		Table monthlyGaragePaymentsTable = new Table("TABLA", monthlyGaragePayments) {
+		    @Override
+		    protected String formatPropertyValue(Object rowId,
+		            Object colId, Property property) {
+		        // Format by property type
+		        if (property.getType() == Calendar.class) {
+		        	Calendar cal = (Calendar)property.getValue();
+		            SimpleDateFormat df =
+		                new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		            return df.format(cal.getTime());
+		        }
+
+		        return super.formatPropertyValue(rowId, colId, property);
+		    }
+		};
+		
 		l.addComponent(monthlyGaragePaymentsTable);
 		
 		setCompositionRoot(l);

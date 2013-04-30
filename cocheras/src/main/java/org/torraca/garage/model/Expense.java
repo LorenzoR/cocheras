@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -12,12 +13,15 @@ import javax.persistence.TemporalType;
 public class Expense extends PersistentObject implements Serializable {
 	
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false) 
 	private Calendar date;
 	
 	@Basic
+	@Column(nullable = false) 
 	private Double amount;
 	
 	@Basic
+	@Column(nullable = false) 
 	private String comment;
 	
 	public Expense() {

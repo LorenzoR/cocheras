@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,12 +15,9 @@ import javax.persistence.TemporalType;
 
 @Entity
 public class DailyGaragePayment extends GaragePayment implements Serializable {
-
-//	@Id 
-//	@GeneratedValue(strategy = GenerationType.AUTO) 
-//	private Long id;
 	
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false) 
 	private Calendar date;
 	
 	@Basic
