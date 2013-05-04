@@ -17,30 +17,36 @@ import org.torraca.garage.model.DailyGaragePayment;
 import org.torraca.garage.model.Employee;
 import org.torraca.garage.model.Expense;
 import org.torraca.garage.model.Garage;
-import org.torraca.garage.web.DailyGaragePaymentEditor;
 import org.torraca.garage.web.MyVaadinUI;
-import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
-import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
 import org.torraca.garage.web.components.CustomTable;
 import org.torraca.garage.web.components.H1;
 import org.torraca.garage.web.components.H2;
 import org.torraca.garage.web.components.Ruler;
+import org.torraca.garage.web.components.forms.DailyGaragePaymentEditor;
+import org.torraca.garage.web.components.forms.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
+import org.torraca.garage.web.components.forms.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.addon.jpacontainer.util.DefaultQueryModifierDelegate;
 import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.Reindeer;
 
 public class DailyGaragePaymentsTab extends CustomComponent {
@@ -53,64 +59,66 @@ public class DailyGaragePaymentsTab extends CustomComponent {
 		VerticalLayout l = new VerticalLayout();
 		l.setMargin(true);
 		l.setSpacing(true);
-		
+
 		H2 title = new H2("Ingresos Diarios");
-		
+
 		l.addComponent(title);
 		l.addComponent(new Ruler());
 
-		HorizontalLayout horizontalLayout = new HorizontalLayout();
-		horizontalLayout.setWidth("100%");
-		horizontalLayout.setMargin(new MarginInfo(false, true, false, true));
+		AbstractSelect paymentSelect = new ComboBox("Metodo de pago");
+		paymentSelect.addItem(0);
+		paymentSelect.setItemCaption(0, "Todos");
+		paymentSelect.setValue(0);
 
-		Button buttonWithBill = new Button("Con Factura");
-		buttonWithBill.setStyleName(Reindeer.BUTTON_LINK);
-		buttonWithBill.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-				dailyGaragePayments = getPayments(true);
-				dailyGaragePaymentsTable
-						.setContainerDataSource(dailyGaragePayments);
-				// garages = getGarages(floorParam);
-				//
-				// garagesTable.setContainerDataSource(garages);
+		paymentSelect.addItem(1);
+		paymentSelect.setItemCaption(1, "Sin factura");
 
+		paymentSelect.addItem(2);
+		paymentSelect.setItemCaption(2, "Con factura");
+
+		paymentSelect.setNullSelectionAllowed(false);
+		paymentSelect.setImmediate(true);
+
+		paymentSelect.addValueChangeListener(new ValueChangeListener() {
+			public void valueChange(final ValueChangeEvent event) {
+				final String valueString = String.valueOf(event.getProperty()
+						.getValue());
+
+				int paymentSelect;
+				
+				System.out.println("===== " + valueString);
+
+				if (valueString.equals("0")) {
+					dailyGaragePayments = dailyGaragePayments = JPAContainerFactory
+							.make(DailyGaragePayment.class,
+									MyVaadinUI.PERSISTENCE_UNIT);
+					Object[] columns = dailyGaragePaymentsTable
+							.getVisibleColumns();
+					dailyGaragePaymentsTable
+							.setContainerDataSource(dailyGaragePayments);
+					dailyGaragePaymentsTable.setVisibleColumns(columns);
+				} else if (valueString.equals("1")) {
+					dailyGaragePayments = getPayments(false);
+					Object[] columns = dailyGaragePaymentsTable
+							.getVisibleColumns();
+					dailyGaragePaymentsTable
+							.setContainerDataSource(dailyGaragePayments);
+					dailyGaragePaymentsTable.setVisibleColumns(columns);
+				} else if (valueString.equals("2")) {
+					dailyGaragePayments = getPayments(true);
+					Object[] columns = dailyGaragePaymentsTable
+							.getVisibleColumns();
+					dailyGaragePaymentsTable
+							.setContainerDataSource(dailyGaragePayments);
+					dailyGaragePaymentsTable.setVisibleColumns(columns);
+				}
+
+				Notification.show("Value changed:", valueString,
+						Type.TRAY_NOTIFICATION);
 			}
 		});
-		horizontalLayout.addComponent(buttonWithBill);
 
-		Button buttonWithoutBill = new Button("Sin Factura");
-		buttonWithoutBill.setStyleName(Reindeer.BUTTON_LINK);
-		buttonWithoutBill.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-				dailyGaragePayments = getPayments(false);
-				dailyGaragePaymentsTable
-						.setContainerDataSource(dailyGaragePayments);
-				// garages = getGarages(floorParam);
-				//
-				// garagesTable.setContainerDataSource(garages);
-
-			}
-		});
-		horizontalLayout.addComponent(buttonWithoutBill);
-
-		Button buttonTotal = new Button("Total");
-		buttonTotal.setStyleName(Reindeer.BUTTON_LINK);
-		buttonTotal.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-
-				dailyGaragePayments = JPAContainerFactory.make(
-						DailyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);
-				dailyGaragePaymentsTable
-						.setContainerDataSource(dailyGaragePayments);
-				// garages = getGarages(floorParam);
-				//
-				// garagesTable.setContainerDataSource(garages);
-
-			}
-		});
-		horizontalLayout.addComponent(buttonTotal);
-
-		l.addComponent(horizontalLayout);
+		l.addComponent(paymentSelect);
 
 		dailyGaragePayments = JPAContainerFactory.make(
 				DailyGaragePayment.class, MyVaadinUI.PERSISTENCE_UNIT);

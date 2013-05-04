@@ -11,13 +11,13 @@ import org.torraca.garage.model.Employee;
 import org.torraca.garage.model.Expense;
 import org.torraca.garage.model.Garage;
 import org.torraca.garage.model.MonthlyGaragePayment;
-import org.torraca.garage.web.DailyGaragePaymentEditor;
 import org.torraca.garage.web.MyVaadinUI;
-import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
-import org.torraca.garage.web.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
 import org.torraca.garage.web.components.CustomTable;
 import org.torraca.garage.web.components.H2;
 import org.torraca.garage.web.components.Ruler;
+import org.torraca.garage.web.components.forms.DailyGaragePaymentEditor;
+import org.torraca.garage.web.components.forms.DailyGaragePaymentEditor.DailyGaragePaymentSavedEvent;
+import org.torraca.garage.web.components.forms.DailyGaragePaymentEditor.DailyGaragePaymentSavedListener;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;

@@ -37,6 +37,10 @@ public class MonthlyGaragePayment extends GaragePayment implements Serializable 
 	@JoinColumn(name = "garage_id", nullable = false)
 	private Garage garage;
 
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Client.class)
+	@JoinColumn(name = "client_id", nullable = false)
+	private Client client;
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private PaymentType paymentType;
@@ -100,7 +104,15 @@ public class MonthlyGaragePayment extends GaragePayment implements Serializable 
 	public void setQtyMonths(Integer qtyMonths) {
 		this.qtyMonths = qtyMonths;
 	}
-	
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
 	public String toString() {
 		return "Pago cochera " + garage + " del " + date.getTime();
 	}

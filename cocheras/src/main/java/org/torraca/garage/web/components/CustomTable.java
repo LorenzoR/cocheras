@@ -87,11 +87,11 @@ public class CustomTable extends Table {
 			String dateFormatted = fmt.format(((GregorianCalendar) property
 					.getValue()).getTime());
 			
-			Calendar calendar = (GregorianCalendar) property.getValue();
-			
-			return calendar.getTime().toString();
+//			Calendar calendar = (GregorianCalendar) property.getValue();
+//			
+//			return calendar.getTime().toString();
 
-			//return dateFormatted;
+			return dateFormatted;
 		}
 
 		if (property.getType() == Date.class) {
